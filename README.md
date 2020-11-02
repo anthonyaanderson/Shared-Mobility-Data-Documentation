@@ -10,9 +10,18 @@ Data is retrieved from  each provider’s API  and placed into a database. The d
 
 We then create aggregate data groupings for reporting into this dashboard from that database.
 
+## Data Aggregation for Privacy Concerns
 
+TBD
+## Data Aggregations
+Here is a list of the data aggregations we use to analyse our data. 
 
-## Fleet Snapshot Methodology
+### Trip Count
+
+### Fleet Count(Pre June 2020)
+
+### Fleet Snapshot Methodology
+In order the count the number of shared mobility devices that are avaialble on city street we are using a count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
 
 1.	Take an array of date-times for a day at every hour. 
 2.	For each day-time, I filter the status changes  data to before the date-time and back for 7 days.
@@ -22,8 +31,6 @@ We then create aggregate data groupings for reporting into this dashboard from t
 6.	I then combine all of these last devices status’s for each day-time  period into one data group.
 7.	After that I group the data by day-time, Provider, Vehicle type, event type, and  event reason by counting the each datapoint.  
 Python Panda Function
-
-### Python Function 
 
 ```python
 #SC is the Statsus Changes Database
@@ -78,3 +85,13 @@ def get_hourlysnapshot(SC, rundate):
   #This returns the aggregated data.
   return Snapshot
  ```
+### Max Hourly Fleet Snap
+### Min Hourly Fleet Snap
+### Equity Trips
+### Equity Fleet
+### Transit Trips
+
+### Ridership
+### Trip Location  Maps
+### Trips Durations(Hours, Minute Seconds)
+### Trip Distance(Miles, Feet, Kilometers, Meters)
