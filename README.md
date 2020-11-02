@@ -15,7 +15,29 @@ TBD
 Here is a list of the data aggregations we use to analyse our data. 
 
 ### Trip Count
+To calculate the number of shared mobility trips daily we use an aggreagrated count of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json)
+Process:
+1) Filter the trips to in seattle, a duration of longer than 30 seconds and a distance of longer than 1 meter. 
+2) Pull the travel date by the trips end time. 
+3) Aggregate the dataframe into a daily count of trips by provider and vehilce type.
 
+Code:
+```python
+def get_trip_count(df_trips):
+    
+    # filter criteria
+    df_trips = df_trips[df_trips['TripDuration'] > 30]
+    df_trips = df_trips[df_trips['TripDistance'] > 0]
+    
+    # extract the travel date from the trisp end time.
+    df_trips['travel_date'] = df_trips['EndTimeLocal'].apply(lambda x: x.strftime("%Y-%m-%d"))
+    df_trips['trip_count'] = 1
+    
+    # Aggregate dataframe by travel date, provider name, and vehicle type
+    df_tripcount = df_trips.groupby(['travel_date','ProviderName','VehicleType'], as_index=False).agg({'trip_count':'sum'})
+    
+    return df_tripcount
+```
 ### Fleet Count(Pre June 2020)
 
 ### Fleet Snapshot Methodology
