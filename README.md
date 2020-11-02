@@ -39,7 +39,7 @@ def get_trip_count(df_trips):
     return df_tripcount
 ```
 ### Fleet Count(Pre June 2020)
-To calculate the size of the bike share fleets in Seattle,  we checked all status changes for each provider back 7 days. 
+To calculate the size of the bike share fleets in Seattle,  we checked all status changes for each provider back 7 days using using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
 Status Changes with event reason's that are not "service ends" or "maintaince picks up" are calssified as  "In Service."
 Status Changes with the event reason of "maintanience pick up"  are classified as "In Maintanince."
 
@@ -119,7 +119,7 @@ def get_fleet_size(df_status):
 ### Fleet Snapshot Methodology
 In order the count the number of shared mobility devices that are avaialble on city streets we are taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
 
-The process: 
+The process to create an hourly snap shot: 
 1.	Take an array of date-times for every hour of a day. This gives you the list of snapshot datetimes to check.
 2.	For each day-time, filter the status changes data set to before the date-time you are check and back for 7 days. This filter will give you all statuc changes up to your day-time and checks 7 days back to see the status that have updated a week before this time. 
 3.	Create  a list of all of the unique devices within that filtered data. you will use that list to check the status of each device.
@@ -184,6 +184,8 @@ def get_hourlysnapshot(SC, rundate):
   #Return the aggregated data.
   return Snapshot
  ```
+ 
+ To change the 
 ### Max Hourly Fleet Snap
 ### Min Hourly Fleet Snap
 ### Equity Trips
