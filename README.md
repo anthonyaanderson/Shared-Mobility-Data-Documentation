@@ -19,21 +19,22 @@ Here is a list of the data aggregations we use to analyse our data.
 ### Fleet Count(Pre June 2020)
 
 ### Fleet Snapshot Methodology
-In order the count the number of shared mobility devices that are avaialble on city street we are using a count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
+In order the count the number of shared mobility devices that are avaialble on city streets we are taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
 
-1.	Take an array of date-times for a day at every hour. 
-2.	For each day-time, I filter the status changes  data to before the date-time and back for 7 days.
-3.	I then pull a list of all of the unique devices in that filtered data.
-4.	For each device in that list I create a data set with only this device’s status changes.
-5.	I save the last change.
-6.	I then combine all of these last devices status’s for each day-time  period into one data group.
-7.	After that I group the data by day-time, Provider, Vehicle type, event type, and  event reason by counting the each datapoint.  
+The process: 
+1.	Take an array of date-times for every hour of a day. This gives you the list of snapshot datetimes to check.
+2.	For each day-time, filter the status changes data set to before the date-time you are check and back for 7 days. This filter will give you all statuc changes up to your day-time and checks 7 days back to see the status that have updated a week before this time. 
+3.	Create  a list of all of the unique devices within that filtered data. you will use that list to check the status of each device.
+4.	For each device in that list, Create a data set with only this device’s status changes.
+5.	Save only the last status change that device recorded in this data set.
+6.	Combine all of these devices status’s for each day-time  period into one data group.
+7.	Group the data by day-time, Provider, Vehicle type, event type, and  event reason by counting the each datapoint.  
+
 Python Panda Function
-
 ```python
-#SC is the Statsus Changes Database
+#SC is the internal Status Changes Database
 #rundate is the date you want to run the snapshot
-#
+
 def get_hourlysnapshot(SC, rundate):
   dev =[]
   EventTimeLocal =[]
@@ -43,20 +44,22 @@ def get_hourlysnapshot(SC, rundate):
   VehicleType =[]
   Snaptime = []
   
-  #rng will get a date tiem for every hour for this date.
+  #Step 1: rng will get a date time for every hour for this date.
   rng = pd.date_range(rundate, periods=24, freq='1H')
   
-  #this loop will run through all the hours in the day
+  #Step 2: using a for loop to filter the status change data for each day-time
   for d in rng:
     filterSC =  SC[SC['EventTimeLocal'] < d]
     days=7    
     cutoff_date = d - pd.Timedelta(days=days)
     filterSC2 = filterSC[filterSC['EventTimeLocal'] > cutoff_date] 
+    #Step 3: create a list of all devices that are listed in this filtered data set
     Devices = filterSC2.DeviceId.unique()
     
-    #This loop will get the last status change for each device in this hour
+    #Step 4:This loop will get filter the status change data to just the data for a specific device. 
     for i in Devices:
       IDevice = filterSC2[filterSC2['DeviceId']== i]
+      #Step 5: Use only the last status change for each device
       LastStatus = IDevice.iloc[-1:]
       dev.append(i)
       EventTimeLocal.append(LastStatus.iloc[0]["EventTimeLocal"])
@@ -66,7 +69,7 @@ def get_hourlysnapshot(SC, rundate):
       VehicleType.append(LastStatus.iloc[0]["VehicleType"])
       Snaptime.append(d)
    
-  #This area puts the data into a panda dataframe
+  #Step 6: Then add all the last status of each device for each time into a data frame
   df = pd.DataFrame()
   df["Device"] = dev
   df['EventTimeLocal'] = EventTimeLocal
@@ -77,10 +80,10 @@ def get_hourlysnapshot(SC, rundate):
   df['Time'] = Snaptime
   df['count']= 1
   
-  #This are aggragates the data by the hour, provider, vehicle type, and status chaneg events.
+  #Step 7: Aggragate the data by the hour, provider, vehicle type, and status chaneg events.
   Snapshot = df.groupby(['Time','ProviderName','VehicleType', 'EventType', 'EventTypeReason',], as_index=False).agg({'count':'sum'})
   
-  #This returns the aggregated data.
+  #Return the aggregated data.
   return Snapshot
  ```
 ### Max Hourly Fleet Snap
