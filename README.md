@@ -119,7 +119,7 @@ def get_fleet_size(df_status):
 ### Fleet Snapshot Methodology
 In order the count the number of shared mobility devices that are avaialble on city streets we are taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
 
-The process to create an hourly snap shot: 
+The process to create an hourly snap shot(See code below): 
 1.	Take an array of date-times for every hour of a day. This gives you the list of snapshot datetimes to check.
 2.	For each day-time, filter the status changes data set to before the date-time you are check and back for 7 days. This filter will give you all statuc changes up to your day-time and checks 7 days back to see the status that have updated a week before this time. 
 3.	Create  a list of all of the unique devices within that filtered data. you will use that list to check the status of each device.
@@ -127,6 +127,21 @@ The process to create an hourly snap shot:
 5.	Save only the last status change that device recorded in this data set.
 6.	Combine all of these devices status’s for each day-time  period into one data group.
 7.	Group the data by day-time, Provider, Vehicle type, event type, and  event reason by counting the each datapoint.  
+
+ 
+The snaphot data with have a group of event types per hour. Those event types are classified into if a device is inactive or active. 
+
+| Event Type  | Event Type Reason | FleetCount |
+| ------------- | ------------- | ------------- |
+| available  | maintenance_drop_off  | Active  | 
+| available  | rebalance_drop_off  | Active   | 
+| available  | user_drop_off  | Active   | 
+| removed  | maintenance_pick_up  | Inactive  | 
+| removed  | rebalance_pick_up | Inactive  | 
+| reserved  | user_pick_up | Active   | 
+| unavailable  | low_battery | Active   | 
+| unavailable  | maintenance  | Active   | 
+
 
 Python Code:
 ```python
@@ -184,8 +199,8 @@ def get_hourlysnapshot(SC, rundate):
   #Return the aggregated data.
   return Snapshot
  ```
- 
- To change the 
+
+
 ### Max Hourly Fleet Snap
 ### Min Hourly Fleet Snap
 ### Equity Trips
