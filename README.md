@@ -6,8 +6,6 @@ MDS – or “Mobility Data Specification” – is comprised of a set of Applic
 
 To maintain compliance with shared mobility licensing permits, providers must provide and an API  that projects trips and vehicle fleet data according to [MDS standards](https://github.com/openmobilityfoundation/mobility-data-specification).(Currently using MDS 1.0-0.4.0)
 
-Data is retrieved from  each provider’s API  and placed into a database. The database is projected into and open data portal at (OPEN DATA)
-
 We then create aggregate data groupings for reporting into this dashboard from that database.
 
 ## Data Aggregation for Privacy Concerns
