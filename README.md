@@ -154,7 +154,7 @@ def get_fleet_size(df_status):
 ```
 
 ### Fleet Snapshot Methodology
-In order the count the number of shared mobility devices that are avaialble on city streets we are taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
+In order the count the number of shared mobility devices that are available on city streets we are taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
 
 The process to create an hourly snap shot(See code below): 
 1.	Begin with an array of date-times for every hour of a day. This gives you the list of snapshot date-times to check. (*ex. 09/01/2020 1:00AM, 09/01/2020 2:00 AM, 09/01/2020 3:00 AM*)
