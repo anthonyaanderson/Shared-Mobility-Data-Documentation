@@ -36,7 +36,9 @@ shared trips with fixed stops, do not reveal personally identifiable patterns an
 
 ### Data Aggregation to Protect PII
 
-The dataset intake process includes aggregations to prevent the disclosure of potentially identifying information that can occur in mobility data, while still allowing approximate, useful information to be released and published. Our disclosure control policy aggregates trip data into location and time bins as follows:
+The data intake process includes aggregations of the individual trip data to prevent the disclosure of potentially identifying information that can occur in mobility data, while still allowing approximate, useful information to be released and published. 
+
+Our data policy aggregates trip data into location and time bins as follows:
 
 * First, the precision of start and end locations have been reduced by truncating latitude and longitude coordinates to two decimal points. This results in a grid of rectangular bins approximately 2,700 ft by 1,800 ft with an area of approximately 0.17 sq. miles. 
 
