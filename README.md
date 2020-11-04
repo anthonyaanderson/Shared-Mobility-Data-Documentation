@@ -38,9 +38,9 @@ shared trips with fixed stops, do not reveal personally identifiable patterns an
 
 The dataset intake process includes aggregations to prevent the disclosure of potentially identifying information that can occur in mobility data, while still allowing approximate, useful information to be released and published. Our disclosure control policy aggregates trip data into location and time bins as follows:
 
--First, the precision of start and end locations have been reduced by truncating latitude and longitude coordinates to two decimal points. This results in a grid of rectangular bins approximately 2,700 ft by 1,800 ft with an area of approximately 0.17 sq. miles. 
+* First, the precision of start and end locations have been reduced by truncating latitude and longitude coordinates to two decimal points. This results in a grid of rectangular bins approximately 2,700 ft by 1,800 ft with an area of approximately 0.17 sq. miles. 
 
--Second, the timestamps are broken into five daypart time bins: AM Peak (6-9 AM), PM Peak (4-7PM) , Mid-Day, Night, and Weekend. These windows are based on typical travel patterns.
+* Second, the timestamps are broken into five daypart time bins: AM Peak (6-9 AM), PM Peak (4-7PM) , Mid-Day, Night, and Weekend. These windows are based on typical travel patterns.
 
 Finally, we aggregate trips by location and time bins by quarter. To prevent individual trips from being identified, we drop the location information in any group that consist of less than 3 trips. These sensitive trips are included in the data set as larger groups aggregated only by time bins. Within all groups, travel attributes such as distance traveled and trip duration are averaged.
 
