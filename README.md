@@ -34,6 +34,8 @@ simultaneously ensuring that cities have the necessary information to achieve pu
 serve public needs. In contrast, ride-hail trips without a passenger, like “dead-heading” or circulating, or
 shared trips with fixed stops, do not reveal personally identifiable patterns and can be easily shared. 
 
+### Data Aggregation to Protect PII
+
 ## Data Aggregations
 Here is a list of the data aggregations used to analyse shared mobility data. 
 
