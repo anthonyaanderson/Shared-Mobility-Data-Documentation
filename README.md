@@ -1,18 +1,41 @@
 # MDS-Data
-New Mobility Data Methodology
+Shared Mobility Data Methodology
 
 ## Data Retrieval 
 MDS – or “Mobility Data Specification” – is comprised of a set of Application Programming Interfaces (APIs) that create standard communications between cities and private companies to improve their operations. 
 
-To maintain compliance with shared mobility licensing permits, providers must provide and an API  that projects trips and vehicle fleet data according to [MDS standards](https://github.com/openmobilityfoundation/mobility-data-specification).(Currently using MDS 1.0-0.4.0)
+To maintain compliance with shared mobility licensing permits, providers must provide and an [API  that projects trips and Status change data](https://github.com/openmobilityfoundation/governance/blob/main/technical/Understanding-MDS-APIs.md) according to [MDS standards](https://github.com/openmobilityfoundation/mobility-data-specification).(Currently using MDS 1.0-0.4.0)
 
-We then create aggregate data groupings for reporting into this dashboard from that database.
+
 
 ## Data Aggregation for Privacy Concerns
+### Personally identifiable information (PII) 
+[PII](https://nacto.org/wp-content/uploads/2019/05/NACTO_IMLA_Managing-Mobility-Data.pdf) is commonly thought to be limited to direct unique personal identifiers such as name, address, social security number, or credit card number. However, all data canbecome PII depending on how easily and accurately it can be tied to an individual. The U.S. government defines PII as “information that can be used to distinguish or trace an individual’s identity, either alone or when combined with other personal or identifying information that is linked or linkable to a specificindividual.”
 
-TBD
+Geospatial data is, or can become, PII in two ways:
+
+• **Recognizable Travel Patterns** – Even in anonymous datasets, people can be re-identified from their routine travel patterns – e.g. from home to work, school, stores, or religious institutions. The 2013
+    Scientific Report article, “Unique in the Crowd: the privacy bounds of human mobility” found that, in a dataset of 1.5 million people over 6 months, and using location points triangulated from cellphone towers, “four spatio-temporal points are enough to uniquely identify 95% of the individuals.”
+    
+• **Combined With Other Data** – Geospatial mobility data can be combined with other data points to become PII (sometimes referred to as indirect or linked PII). For example, taken by itself, a single geospatial data point like a ride-hail drop-off location is not PII. But, when combined with a phonebook or reverse address look-up service, that data becomes easily linkable to an individual person. 
+
+*For example, in 2014, a researcher requested anonymized taxi geo-location data from NYC Taxi and Limousine Commission under freedom of information laws, mapped them using MapQuest, and was able identify the home addresses of people hailing taxis in front of theHustler Club between midnight and 6am. Combining a home address with an address look-upwebsite, Facebook and other sources, the researcher was able to find the “property value, ethnicity,relationship status, court records and even a profile picture!” of an individual patron.*
+
+The small number of data points necessary to identify an individual from their travel patterns, the
+ubiquity of secondary data sets, and the ease with which they can be combined with geospatial trip data
+to form PII, all mean that both the public and private sector should treat geopspatial trip data as PII for
+collection, management, storage, and dissemination.
+When it comes to mobility, privacy is related to the degree to which an individual trip is synonymous
+with an individual person. For example, each dockless scooter trip is tied to an individual user and thus
+broadcasts specific, unique information about an individual person’s behavior. Similarly, when passengers
+are in the car, an app-based ride-hail or autonomous vehicle trip is linked to an individual. Such data
+should be handled in accordance with city PII policies to ensure that individual privacy is protected while
+simultaneously ensuring that cities have the necessary information to achieve public policy goals and
+serve public needs. In contrast, ride-hail trips without a passenger, like “dead-heading” or circulating, or
+shared trips with fixed stops, do not reveal personally identifiable patterns and can be easily shared. 
+
 ## Data Aggregations
-Here is a list of the data aggregations we use to analyse our data. 
+Here is a list of the data aggregations used to analyse shared mobility data. 
 
 ### Trip Count
 To calculate the number of shared mobility trips daily we use an aggreagrated count of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json)
