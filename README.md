@@ -157,13 +157,13 @@ def get_fleet_size(df_status):
 In order the count the number of shared mobility devices that are avaialble on city streets we are taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
 
 The process to create an hourly snap shot(See code below): 
-1.	Take an array of date-times for every hour of a day. This gives you the list of snapshot datetimes to check.
-2.	For each day-time, filter the status changes data set to before the date-time you are check and back for 7 days. This filter will give you all statuc changes up to your day-time and checks 7 days back to see the status that have updated a week before this time. 
-3.	Create  a list of all of the unique devices within that filtered data. you will use that list to check the status of each device.
-4.	For each device in that list, Create a data set with only this device’s status changes.
+1.	Begin with an array of date-times for every hour of a day. This gives you the list of snapshot date-times to check. (*ex. 09/01/2020 1:00AM, 09/01/2020 2:00 AM, 09/01/2020 3:00 AM*)
+2.	For each date-time, filter the status changes data set to gather all status changes for the seven days leading up to each date-time. (*For example, if the date-time is 09/01/2020 at 1:00 AM, gather all status changes between 08/25/2020 to 09/01/2020 at 1:00 AM.*)
+3.	Create a list of all of the unique devices that appear within that filtered data. You will use that list to check the status of each device.
+4.	For each device in that list, create a data set with only this device’s status changes.
 5.	Save only the last status change that device recorded in this data set.
 6.	Combine all of these devices status’s for each day-time  period into one data group.
-7.	Group the data by day-time, Provider, Vehicle type, event type, and  event reason by counting the each datapoint.  
+7.	Group the data by day-time, provider, vehicle type, event type, and  event reason by counting the each datapoint.  
 
  
 The snaphot data with have a group of event types per hour. Those event types are classified into if a device is inactive or active. 
@@ -173,12 +173,13 @@ The snaphot data with have a group of event types per hour. Those event types ar
 | available  | maintenance_drop_off  | Active  | 
 | available  | rebalance_drop_off  | Active   | 
 | available  | user_drop_off  | Active   | 
+| available  | service_start  | Active   | 
+| removed  | service_end  | No Longer Counted   | 
 | removed  | maintenance_pick_up  | Inactive  | 
 | removed  | rebalance_pick_up | Inactive  | 
 | reserved  | user_pick_up | Active   | 
 | unavailable  | low_battery | Active   | 
 | unavailable  | maintenance  | Active   | 
-
 
 Python Code:
 ```python
