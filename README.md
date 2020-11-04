@@ -1,5 +1,17 @@
-# MDS-Data
-Shared Mobility Data Methodology
+# MDS Data Collection: Shared Mobility Data Methodology
+
+The City of Seattle, through its Department
+of Transportation (SDOT), works to deliver a
+transportation system that provides safe and
+affordable access to places and opportunities. This is
+reflected in the work SDOT does to manage the public
+right-of-way, ensure safe movement of people and
+goods, and improve infrastructure and mobility choices
+throughout the city. As SDOT works to advance our
+core values of equity, safety, mobility, sustainability,
+livability, and excellence, we collect data necessary
+for performing our work while protecting against the
+misuse of personal mobility data.
 
 ## Data Retrieval 
 MDS – or “Mobility Data Specification” – is comprised of a set of Application Programming Interfaces (APIs) that create standard communications between cities and private companies to improve their operations. 
@@ -35,6 +47,17 @@ serve public needs. In contrast, ride-hail trips without a passenger, like “de
 shared trips with fixed stops, do not reveal personally identifiable patterns and can be easily shared. 
 
 ### Data Aggregation to Protect PII
+
+Though the vehicle and trip data SDOT collects
+from Operators does not contain personal
+information associated with an individual, SDOT
+applies the [City of Seattle Privacy Principles](https://www.seattle.gov/Documents/Departments/InformationTechnology/City-of-Seattle-Privacy-Principles-FINAL.pdf) and
+[Information Security Data Classification Guidelines](http://www.seattle.gov/tech/initiatives/information-security)
+for collecting, transmitting, storing, and using
+personal information in addition to the following
+[data protection standards](http://www.seattle.gov/Documents/Departments/Tech/Privacy/SDOT_Mobility_Data_Guidelines.pdf)
+
+
 
 The data intake process includes aggregations of the individual trip data to prevent the disclosure of potentially identifying information that can occur in mobility data, while still allowing approximate, useful information to be released and published. 
 
