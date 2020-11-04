@@ -46,6 +46,7 @@ Finally, we aggregate trips by location and time bins by quarter. To prevent ind
 
 Example location bins by coordinate truncation to 0.01 degrees Latitude and Longitude.
 
+![Image of Grids](https://github.com/anthonyaanderson/MDS-Data/blob/main/SeattleGrid.png)
 
 ## Data Aggregations
 Here is a list of the data aggregations used to analyse shared mobility data. 
