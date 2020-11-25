@@ -191,20 +191,20 @@ The process to create an hourly snap shot(See code below):
 7.	Group the data by day-time, provider, vehicle type, event type, and  event reason by counting the each datapoint.  
 
  
-The snaphot data with have a group of event types per hour. Those event types are classified into if a device is inactive or active. 
+The snaphot data with have a group of event types per hour. Those event types are classified into if a device is included in the count or out for maintenance. 
 
 | Event Type  | Event Type Reason | FleetCount |
 | ------------- | ------------- | ------------- |
-| available  | maintenance_drop_off  | Active  | 
-| available  | rebalance_drop_off  | Active   | 
-| available  | user_drop_off  | Active   | 
-| available  | service_start  | Active   | 
+| available  | maintenance_drop_off  | included  | 
+| available  | rebalance_drop_off  | included   | 
+| available  | user_drop_off  | included  | 
+| available  | service_start  | included   | 
 | removed  | service_end  | No Longer Counted   | 
-| removed  | maintenance_pick_up  | Inactive  | 
-| removed  | rebalance_pick_up | Inactive  | 
-| reserved  | user_pick_up | Active   | 
-| unavailable  | low_battery | Active   | 
-| unavailable  | maintenance  | Active   | 
+| removed  | maintenance_pick_up  | out for maintenance  | 
+| removed  | rebalance_pick_up | out for maintenance  | 
+| reserved  | user_pick_up | included   | 
+| unavailable  | low_battery | included   | 
+| unavailable  | maintenance  | included   | 
 
 Python Code:
 ```python
