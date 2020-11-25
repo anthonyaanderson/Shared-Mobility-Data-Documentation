@@ -77,11 +77,11 @@ Example location bins by coordinate truncation to 0.01 degrees Latitude and Long
 Here is a list of the data aggregations used to analyse shared mobility data. 
 
 ### Trip Count
-To calculate the number of shared mobility trips daily we use an aggreagrated count of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json)
+To calculate the number of shared mobility trips daily we use an aggregatedcount of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json)
 Process:
-1) Filter the trips to in seattle, a duration of longer than 30 seconds and a distance of longer than 1 meter. 
+1) Filter the trips to in Seattle, a duration of longer than 30 seconds and a distance of longer than 1 meter. 
 2) Pull the travel date by the trips end time. 
-3) Aggregate the dataframe into a daily count of trips by provider and vehilce type.
+3) Aggregate the dataframe into a daily count of trips by provider and vehicle type.
 
 Python Code:
 ```python
