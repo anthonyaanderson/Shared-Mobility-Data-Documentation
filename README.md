@@ -82,6 +82,9 @@ Process:
 1) Filter the trips to in Seattle, a duration of longer than 30 seconds and a distance of longer than 1 meter. 
 2) Pull the travel date by the trips end time. 
 3) Aggregate the dataframe into a daily count of trips by provider and vehicle type.
+<details>
+  <summary>Python Code : Click to expand!</summary>
+  
 
 Python Code:
 ```python
@@ -100,10 +103,16 @@ def get_trip_count(df_trips):
     
     return df_tripcount
 ```
+
+</details>
+
 ### Fleet Count(Pre June 2020)
 To calculate the size of the bike share fleets in Seattle,  we checked all status changes for each provider back 7 days using using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
 Status Changes with event reason's that are not "service ends" or "maintaince picks up" are calssified as  "In Service."
 Status Changes with the event reason of "maintanience pick up"  are classified as "In Maintanince."
+<details>
+  <summary>Python Code: Click to expand!</summary>
+  
 
 ```python
 def get_fleet_size(df_status):
@@ -177,6 +186,8 @@ def get_fleet_size(df_status):
     
     return df_fleetsize
 ```
+
+</details>
 
 ### Fleet Snapshot Methodology
 In order the count the number of shared mobility devices that are available on city streets we are taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
