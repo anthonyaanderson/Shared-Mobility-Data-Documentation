@@ -279,13 +279,8 @@ def get_hourlysnapshot(SC, rundate):
  ```
 </details>
 
-### Max Hourly Fleet Snap
-### Min Hourly Fleet Snap
-### Equity Trips
-### Equity Fleet
-### Transit Trips
-
+### Equity Data
 ### Ridership
-### Trip Location  Maps
-### Trips Durations(Hours, Minute Seconds)
-### Trip Distance(Miles, Feet, Kilometers, Meters)
+### Transit Trips
+### Trips Details
+
