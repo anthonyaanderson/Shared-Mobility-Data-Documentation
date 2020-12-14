@@ -206,6 +206,10 @@ The snaphot data with have a group of event types per hour. Those event types ar
 | unavailable  | low_battery | included   | 
 | unavailable  | maintenance  | included   | 
 
+<details>
+  <summary>Python Code</summary>
+  
+
 Python Code:
 ```python
 #SC is the internal Status Changes Database
@@ -262,7 +266,7 @@ def get_hourlysnapshot(SC, rundate):
   #Return the aggregated data.
   return Snapshot
  ```
-
+</details>
 
 ### Max Hourly Fleet Snap
 ### Min Hourly Fleet Snap
