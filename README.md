@@ -51,14 +51,14 @@ Example location bins by coordinate truncation to 0.01 degrees latitude and long
 ![Image of Grids](https://github.com/anthonyaanderson/MDS-Data/blob/main/SeattleGrid.png)
 
 ## Data Aggregations
-Here is a list of the data aggregations used to analyse shared mobility data. 
+Here is a list of the data aggregations used to analyze shared mobility data. 
 
 ### Trip Count
-To calculate the number of shared mobility trips daily we use an aggregated count of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json)
+To calculate the daily number of shared mobility trips, we use an aggregated count of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json).
 
 Process:
-1) Filter the trips to in Seattle, a duration of longer than 30 seconds and a distance of longer than 1 meter. 
-2) Pull the travel date by the trips end time. 
+1) Filter the trips to those that happen in Seattle city limits, have a duration longer than 30 seconds, and a distance greater than zero meters. 
+2) Pull the travel date by the trip end time. 
 3) Aggregate the dataframe into a daily count of trips by provider and vehicle type.
 <details>
   <summary>Python Code : Click to expand!</summary>
@@ -83,9 +83,10 @@ def get_trip_count(df_trips):
 </details>
 
 ### Fleet Count (Prior to June 2020)
-To calculate the size of the bike share fleets in Seattle,  we checked all status changes for each provider back 7 days using using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
-Status Changes with event reason's that are not "service ends" or "maintaince picks up" are calssified as  "In Service."
-Status Changes with the event reason of "maintanience pick up"  are classified as "In Maintanince."
+To calculate the size of the bike share fleets in Seattle, we check all status changes for each provider looking back 7 days using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
+
+Status changes with event types that are not "service ends" or "maintenance_pick_up" are classified as "In Service."
+Status Changes with the event reason of "maintenanence_pick_up"  are classified as "In Maintenance."
 <details>
   <summary>Python Code: Click to expand!</summary>
   
