@@ -58,7 +58,7 @@ Process:
 2) Pull the travel date by the trip end time. 
 3) Aggregate the dataframe into a daily count of trips by provider and vehicle type.
 <details>
-  <summary>Python Code : Click to expand!</summary>
+  <summary>Python Code: Click to expand!</summary>
   
 ```python
 def get_trip_count(df_trips):
@@ -107,7 +107,7 @@ The snaphot data will have a group of event types per hour. Those event types in
 | unavailable  | maintenance  | included   | 
 
 <details>
-  <summary>Python Code</summary>
+  <summary>Python Code: Click to expand!</summary>
   
 ```python
 #SC is the internal Status Changes Database
