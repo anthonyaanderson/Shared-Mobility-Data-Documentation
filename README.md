@@ -16,7 +16,7 @@ misuse of personal mobility data.
 ## Data Retrieval 
 Shared micromobility vendors permitted to operate in Seattle are required to share data about their operations with SDOT using the [Mobility Data Specification](https://github.com/openmobilityfoundation/mobility-data-specification) (MDS).
 
-MDS comprises a set of application programming interfaces (APIs) that standardize communications between cities and private mobility companies. The [provider](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#realtime-data) API includes the following data:
+MDS comprises a set of application programming interfaces (APIs) that standardize communications between cities and private mobility companies. The [provider](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider) API includes the following data:
 
 • [Trips](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#trips) - start and end time, start and end location, distance (meters), and duration (seconds)
 
