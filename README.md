@@ -7,11 +7,11 @@ Shared micromobility vendors permitted to operate in Seattle are required to sha
 
 MDS comprises a set of application programming interfaces (APIs) that standardize communications between cities and private mobility companies. The [provider](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider) API includes the following data:
 
-• [Trips](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#trips) - start and end time, start and end location, distance (meters), and duration (seconds)
+* [Trips](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#trips) - start and end time, start and end location, distance (meters), and duration (seconds)
 
-• [Status changes](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#status-changes) - status of each vehicle, including available, reserved, removed, and non-operational
+* [Status changes](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#status-changes) - status of each vehicle, including available, reserved, removed, and non-operational
 
-• [Real-time data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#realtime-data) - vendors must also expose a public General Bikeshare Feed Specification (GBFS) URL to facilitate customer-facing applications such as trip planners
+* [Real-time data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#realtime-data) - vendors must also expose a public General Bikeshare Feed Specification (GBFS) URL to facilitate customer-facing applications such as trip planners
 
 ## Data Aggregation to Protect User Privacy
 Though the vehicle and trip data SDOT collects from vendors does not contain personal information associated with an individual (e.g., name, contact information, payment information), SDOT takes proactives steps to further safeguard bike and scooter share users' privacy. 
@@ -23,9 +23,9 @@ Here's why:
 
 Geospatial data is, or can become, PII in two ways:
 
-• **Recognizable travel patterns** – Even in anonymous datasets, people can be re-identified from their routine travel patterns – e.g. from home to work, school, stores, or religious institutions. The 2013 Scientific Report article, [“Unique in the Crowd: the privacy bounds of human mobility”](https://www.nature.com/articles/srep01376), found that, in a dataset of 1.5 million people over 6 months, and using location points triangulated from cellphone towers, “four spatio-temporal points are enough to uniquely identify 95% of the individuals.”
+* **Recognizable travel patterns** – Even in anonymous datasets, people can be re-identified from their routine travel patterns – e.g. from home to work, school, stores, or religious institutions. The 2013 Scientific Report article, [“Unique in the Crowd: the privacy bounds of human mobility”](https://www.nature.com/articles/srep01376), found that, in a dataset of 1.5 million people over 6 months, and using location points triangulated from cellphone towers, “four spatio-temporal points are enough to uniquely identify 95% of the individuals.”
     
-• **Combined with other data** – Geospatial mobility data can be combined with other data points to become PII (sometimes referred to as indirect or linked PII). For example, taken by itself, a single geospatial data point like a ride-hail drop-off location is not PII. But, when combined with a phonebook or reverse address look-up service, that data becomes easily linkable to an individual person. 
+* **Combined with other data** – Geospatial mobility data can be combined with other data points to become PII (sometimes referred to as indirect or linked PII). For example, taken by itself, a single geospatial data point like a ride-hail drop-off location is not PII. But, when combined with a phonebook or reverse address look-up service, that data becomes easily linkable to an individual person. 
 
 *For example, in 2014, a researcher requested anonymized taxi geo-location data from NYC Taxi and Limousine Commission under freedom of information laws, mapped them using MapQuest, and was able identify the home addresses of people hailing taxis in front of the Hustler Club between midnight and 6am. Combining a home address with an address look-upwebsite, Facebook and other sources, the researcher was able to find the “property value, ethnicity, relationship status, court records and even a profile picture!” of an individual patron.*
 
@@ -44,7 +44,7 @@ Our data policy aggregates trip data into location and time bins as follows:
 
 * Second, the timestamps are broken into five daypart time bins: AM Peak (6-9 AM), PM Peak (4-7PM) , Mid-Day, Night, and Weekend. These windows are based on typical travel patterns.
 
-Finally, we aggregate trips by location and time bins by quarter. To prevent individual trips from being identified, we drop the location information in any group that consist of less than 3 trips. These sensitive trips are included in the data set as larger groups aggregated only by time bins. Within all groups, travel attributes such as distance traveled and trip duration are averaged.
+* Finally, we aggregate trips by location and time bins by quarter. To prevent individual trips from being identified, we drop the location information in any group that consist of less than 3 trips. These sensitive trips are included in the data set as larger groups aggregated only by time bins. Within all groups, travel attributes such as distance traveled and trip duration are averaged.
 
 Example location bins by coordinate truncation to 0.01 degrees Latitude and Longitude.
 
