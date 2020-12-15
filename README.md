@@ -33,7 +33,7 @@ MDS comprises a set of application programming interfaces (APIs) that standardiz
 Geospatial data is, or can become, PII in two ways:
 
 • **Recognizable Travel Patterns** – Even in anonymous datasets, people can be re-identified from their routine travel patterns – e.g. from home to work, school, stores, or religious institutions. The 2013
-    Scientific Report article, “Unique in the Crowd: the privacy bounds of human mobility” found that, in a dataset of 1.5 million people over 6 months, and using location points triangulated from cellphone towers, “four spatio-temporal points are enough to uniquely identify 95% of the individuals.”
+    Scientific Report article, [“Unique in the Crowd: the privacy bounds of human mobility”](https://www.nature.com/articles/srep01376), found that, in a dataset of 1.5 million people over 6 months, and using location points triangulated from cellphone towers, “four spatio-temporal points are enough to uniquely identify 95% of the individuals.”
     
 • **Combined With Other Data** – Geospatial mobility data can be combined with other data points to become PII (sometimes referred to as indirect or linked PII). For example, taken by itself, a single geospatial data point like a ride-hail drop-off location is not PII. But, when combined with a phonebook or reverse address look-up service, that data becomes easily linkable to an individual person. 
 
