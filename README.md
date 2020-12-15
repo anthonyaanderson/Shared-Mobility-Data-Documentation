@@ -18,11 +18,11 @@ Shared micromobility vendors permitted to operate in Seattle are required to sha
 
 MDS comprises a set of application programming interfaces (APIs) that standardize communications between cities and private mobility companies. The [provider](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#realtime-data) API includes the following data:
 
-• **Trips** - start and end time, start and end location, distance (meters), and duration (seconds)
+• [Trips](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#trips) - start and end time, start and end location, distance (meters), and duration (seconds)
 
-• **Status changes** - status of each vehicle, including available, reserved, removed, and non-operational
+• [Status changes](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#status-changes) - status of each vehicle, including available, reserved, removed, and non-operational
 
-• **Real-time data** - vendors must also expose a public General Bikeshare Feed Specification (GBFS) URL to facilitate customer-facing applications such as trip planners
+• [Real-time data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/README.md#realtime-data) - vendors must also expose a public General Bikeshare Feed Specification (GBFS) URL to facilitate customer-facing applications such as trip planners
 
 
 
