@@ -117,7 +117,6 @@ Status Changes with the event reason of "maintanience pick up"  are classified a
 <details>
   <summary>Python Code: Click to expand!</summary>
   
-
 ```python
 def get_fleet_size(df_status):
 
@@ -224,8 +223,6 @@ The snaphot data with have a group of event types per hour. Those event types ar
 <details>
   <summary>Python Code</summary>
   
-
-Python Code:
 ```python
 #SC is the internal Status Changes Database
 #rundate is the date you want to run the snapshot
