@@ -91,8 +91,6 @@ Process:
 <details>
   <summary>Python Code : Click to expand!</summary>
   
-
-Python Code:
 ```python
 def get_trip_count(df_trips):
     
