@@ -27,8 +27,9 @@ MDS comprises a set of application programming interfaces (APIs) that standardiz
 
 
 ## Data Aggregation for Privacy Concerns
+
 ### Personally identifiable information (PII) 
-[PII](https://nacto.org/wp-content/uploads/2019/05/NACTO_IMLA_Managing-Mobility-Data.pdf) is commonly thought to be limited to direct unique personal identifiers such as name, address, social security number, or credit card number. However, all data canbecome PII depending on how easily and accurately it can be tied to an individual. The U.S. government defines PII as “information that can be used to distinguish or trace an individual’s identity, either alone or when combined with other personal or identifying information that is linked or linkable to a specificindividual.”
+[PII](https://nacto.org/wp-content/uploads/2019/05/NACTO_IMLA_Managing-Mobility-Data.pdf) is commonly thought to be limited to direct unique personal identifiers such as name, address, social security number, or credit card number. However, all data can become PII depending on how easily and accurately it can be tied to an individual. The U.S. government defines PII as “information that can be used to distinguish or trace an individual’s identity, either alone or when combined with other personal or identifying information that is linked or linkable to a specific individual.”
 
 Geospatial data is, or can become, PII in two ways:
 
@@ -37,7 +38,7 @@ Geospatial data is, or can become, PII in two ways:
     
 • **Combined With Other Data** – Geospatial mobility data can be combined with other data points to become PII (sometimes referred to as indirect or linked PII). For example, taken by itself, a single geospatial data point like a ride-hail drop-off location is not PII. But, when combined with a phonebook or reverse address look-up service, that data becomes easily linkable to an individual person. 
 
-*For example, in 2014, a researcher requested anonymized taxi geo-location data from NYC Taxi and Limousine Commission under freedom of information laws, mapped them using MapQuest, and was able identify the home addresses of people hailing taxis in front of theHustler Club between midnight and 6am. Combining a home address with an address look-upwebsite, Facebook and other sources, the researcher was able to find the “property value, ethnicity,relationship status, court records and even a profile picture!” of an individual patron.*
+*For example, in 2014, a researcher requested anonymized taxi geo-location data from NYC Taxi and Limousine Commission under freedom of information laws, mapped them using MapQuest, and was able identify the home addresses of people hailing taxis in front of the Hustler Club between midnight and 6am. Combining a home address with an address look-upwebsite, Facebook and other sources, the researcher was able to find the “property value, ethnicity, relationship status, court records and even a profile picture!” of an individual patron.*
 
 The small number of data points necessary to identify an individual from their travel patterns, the
 ubiquity of secondary data sets, and the ease with which they can be combined with geospatial trip data
