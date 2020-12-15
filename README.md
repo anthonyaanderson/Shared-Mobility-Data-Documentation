@@ -23,7 +23,7 @@ Here's why:
 
 Geospatial data is, or can become, PII in two ways:
 
-* **Recognizable travel patterns** – Even in anonymous datasets, people can be re-identified from their routine travel patterns – e.g. from home to work, school, stores, or religious institutions. The 2013 Scientific Report article, [“Unique in the Crowd: the privacy bounds of human mobility”](https://www.nature.com/articles/srep01376), found that, in a dataset of 1.5 million people over 6 months, and using location points triangulated from cellphone towers, “four spatio-temporal points are enough to uniquely identify 95% of the individuals.”
+* **Recognizable travel patterns** – Even in anonymous datasets, people can be re-identified from their routine travel patterns – e.g. from home to work, school, stores, or religious institutions. The 2013 Scientific Report article, [“Unique in the Crowd: the privacy bounds of human mobility,”](https://www.nature.com/articles/srep01376) found that, in a dataset of 1.5 million people over 6 months, and using location points triangulated from cellphone towers, “four spatio-temporal points are enough to uniquely identify 95% of the individuals.”
     
 * **Combined with other data** – Geospatial mobility data can be combined with other data points to become PII (sometimes referred to as indirect or linked PII). For example, taken by itself, a single geospatial data point like a ride-hail drop-off location is not PII. But, when combined with a phonebook or reverse address look-up service, that data becomes easily linkable to an individual person. 
 
@@ -42,16 +42,13 @@ Our data policy aggregates trip data into location and time bins as follows:
 
 * First, the precision of start and end locations have been reduced by truncating latitude and longitude coordinates to two decimal points. This results in a grid of rectangular bins approximately 2,700 ft by 1,800 ft with an area of approximately 0.17 sq. miles. 
 
-* Second, the timestamps are broken into five daypart time bins: AM Peak (6-9 AM), PM Peak (4-7PM) , Mid-Day, Night, and Weekend. These windows are based on typical travel patterns.
+* Second, the timestamps are broken into five daypart time bins: AM peak (6-9 AM), PM peak (4-7 PM) , midday, night, and weekend. These windows are based on typical travel patterns.
 
 * Finally, we aggregate trips by location and time bins by quarter. To prevent individual trips from being identified, we drop the location information in any group that consist of less than 3 trips. These sensitive trips are included in the data set as larger groups aggregated only by time bins. Within all groups, travel attributes such as distance traveled and trip duration are averaged.
 
 Example location bins by coordinate truncation to 0.01 degrees latitude and longitude:
 
 ![Image of Grids](https://github.com/anthonyaanderson/MDS-Data/blob/main/SeattleGrid.png)
-
-## Data Aggregations
-Here is a list of the data aggregations used to analyze shared mobility data. 
 
 ### Trip Count
 To calculate the daily number of shared mobility trips, we use an aggregated count of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json).
@@ -82,91 +79,8 @@ def get_trip_count(df_trips):
 
 </details>
 
-### Fleet Count (Prior to June 2020)
-To calculate the size of the bike share fleets in Seattle, we check all status changes for each provider looking back 7 days using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
-
-Status changes with event types that are not "service ends" or "maintenance_pick_up" are classified as "In Service."
-Status Changes with the event reason of "maintenanence_pick_up"  are classified as "In Maintenance."
-<details>
-  <summary>Python Code: Click to expand!</summary>
-  
-```python
-def get_fleet_size(df_status):
-
-    df_status['event_time_utc'] = pd.to_datetime(df_status['EventTimeLocal'])
-    df_status.drop_duplicates(keep="last",inplace=True) 
-    
-    # limit records to locations in Seattle
-    df_status['location'] = df_status[['Latitude','Longitude']].apply(lambda x: inSeattle(*x), axis=1)
-    df_status = df_status[df_status['location'] == 'In Seattle']
-    
-    df_providers = df_status.groupby(['ProviderName'], as_index=False).agg({'location':'first'})
-    
-    #print (df_providers)
-    providers = df_providers['ProviderName'].to_list()
-    print (providers)
-    
-    Snapshot_date = []
-    Count_in_service = []
-    Count_in_maintenance = []
-    Provider_name = []
-    Vehicle_type = []
-    
-    
-    # Iterate through each provider
-    for provider in providers:
-
-        df_status_provider = df_status[df_status['ProviderName'] == provider]
-        
-        # Minimum and maximum start dates
-        min_date = df_status_provider['event_time_utc'].min().replace(hour=5, minute=0, second=0, microsecond=0)
-        max_date = df_status_provider['event_time_utc'].max().replace(hour=5, minute=0, second=0, microsecond=0)
-        report_start_date = min_date + timedelta(days=7)
-        report_duration = (max_date - report_start_date).days + 2
-        print (min_date, max_date, report_start_date, report_duration)
-        
-        print ('min_date:',min_date,'max_date:',max_date, 'report_start_date:',report_start_date)
-        
-        # Iterate through each day in the dataset and calculate the fleet size for that time
-        for i in range(report_duration):
-        
-            snapshot_end_date = report_start_date + timedelta(days=i)
-            snapshot_start_date = snapshot_end_date + timedelta(days=-7)  
-            travel_date = snapshot_end_date.strftime("%Y-%m-%d")
-            print ("travel_date", travel_date,"snapshot_end_date",snapshot_end_date,"snapshot_start_date",snapshot_start_date)
-
-            df = df_status_provider.copy()
-
-            # fleet size calculation critieria:
-            # event is within one week prior to snapshot
-            df = df[(df['event_time_utc'] > snapshot_start_date) & (df['event_time_utc'] <= snapshot_end_date)]
-
-            # sort chronologically, then take the first event in the time period
-            df = df.sort_values(by=['DeviceId','event_time_utc'], ascending=[False, False])
-            df = df.drop_duplicates(subset=['DeviceId'], keep='first')
-            
-    
-            for vehicle_type in df.VehicleType.unique():
-                Snapshot_date.append(travel_date)
-                Provider_name.append(provider)
-                Vehicle_type.append(vehicle_type)
-                Count_in_service.append(df["EventTypeReason"][(df["EventTypeReason"] != 'maintenance_pick_up') & (df["EventTypeReason"] != 'service_end') & (df["VehicleType"] == vehicle_type)].count())
-                Count_in_maintenance.append(df["EventTypeReason"][(df["EventTypeReason"] == 'maintenance_pick_up') & (df["VehicleType"] == vehicle_type)].count())
-
-    df_fleetsize = pd.DataFrame()
-    df_fleetsize['travel_date'] = Snapshot_date
-    df_fleetsize['vehicle_type'] = Vehicle_type
-    df_fleetsize['provider_name'] = Provider_name
-    df_fleetsize['count_in_service'] = Count_in_service
-    df_fleetsize['count_in_maintenance'] = Count_in_maintenance
-    
-    return df_fleetsize
-```
-
-</details>
-
-### Fleet Snapshot Methodology
-In order the count the number of shared mobility devices that are available on city streets we are taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
+### Fleet Snapshot Methodology (since June 2020)
+In order to count the number of shared mobility devices on city streets at any given time, we are now taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
 
 The process to create an hourly snap shot(See code below): 
 1.	Begin with an array of date-times for every hour of a day. This gives you the list of snapshot date-times to check. (*ex. 09/01/2020 1:00AM, 09/01/2020 2:00 AM, 09/01/2020 3:00 AM*)
@@ -251,6 +165,89 @@ def get_hourlysnapshot(SC, rundate):
   #Return the aggregated data.
   return Snapshot
  ```
+</details>
+
+### Fleet Count (Prior to June 2020)
+To calculate the size of the bike share fleets in Seattle, we check all status changes for each provider looking back 7 days using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
+
+Status changes with event types that are not "service ends" or "maintenance_pick_up" are classified as "In Service."
+Status Changes with the event reason of "maintenanence_pick_up"  are classified as "In Maintenance."
+<details>
+  <summary>Python Code: Click to expand!</summary>
+  
+```python
+def get_fleet_size(df_status):
+
+    df_status['event_time_utc'] = pd.to_datetime(df_status['EventTimeLocal'])
+    df_status.drop_duplicates(keep="last",inplace=True) 
+    
+    # limit records to locations in Seattle
+    df_status['location'] = df_status[['Latitude','Longitude']].apply(lambda x: inSeattle(*x), axis=1)
+    df_status = df_status[df_status['location'] == 'In Seattle']
+    
+    df_providers = df_status.groupby(['ProviderName'], as_index=False).agg({'location':'first'})
+    
+    #print (df_providers)
+    providers = df_providers['ProviderName'].to_list()
+    print (providers)
+    
+    Snapshot_date = []
+    Count_in_service = []
+    Count_in_maintenance = []
+    Provider_name = []
+    Vehicle_type = []
+    
+    
+    # Iterate through each provider
+    for provider in providers:
+
+        df_status_provider = df_status[df_status['ProviderName'] == provider]
+        
+        # Minimum and maximum start dates
+        min_date = df_status_provider['event_time_utc'].min().replace(hour=5, minute=0, second=0, microsecond=0)
+        max_date = df_status_provider['event_time_utc'].max().replace(hour=5, minute=0, second=0, microsecond=0)
+        report_start_date = min_date + timedelta(days=7)
+        report_duration = (max_date - report_start_date).days + 2
+        print (min_date, max_date, report_start_date, report_duration)
+        
+        print ('min_date:',min_date,'max_date:',max_date, 'report_start_date:',report_start_date)
+        
+        # Iterate through each day in the dataset and calculate the fleet size for that time
+        for i in range(report_duration):
+        
+            snapshot_end_date = report_start_date + timedelta(days=i)
+            snapshot_start_date = snapshot_end_date + timedelta(days=-7)  
+            travel_date = snapshot_end_date.strftime("%Y-%m-%d")
+            print ("travel_date", travel_date,"snapshot_end_date",snapshot_end_date,"snapshot_start_date",snapshot_start_date)
+
+            df = df_status_provider.copy()
+
+            # fleet size calculation critieria:
+            # event is within one week prior to snapshot
+            df = df[(df['event_time_utc'] > snapshot_start_date) & (df['event_time_utc'] <= snapshot_end_date)]
+
+            # sort chronologically, then take the first event in the time period
+            df = df.sort_values(by=['DeviceId','event_time_utc'], ascending=[False, False])
+            df = df.drop_duplicates(subset=['DeviceId'], keep='first')
+            
+    
+            for vehicle_type in df.VehicleType.unique():
+                Snapshot_date.append(travel_date)
+                Provider_name.append(provider)
+                Vehicle_type.append(vehicle_type)
+                Count_in_service.append(df["EventTypeReason"][(df["EventTypeReason"] != 'maintenance_pick_up') & (df["EventTypeReason"] != 'service_end') & (df["VehicleType"] == vehicle_type)].count())
+                Count_in_maintenance.append(df["EventTypeReason"][(df["EventTypeReason"] == 'maintenance_pick_up') & (df["VehicleType"] == vehicle_type)].count())
+
+    df_fleetsize = pd.DataFrame()
+    df_fleetsize['travel_date'] = Snapshot_date
+    df_fleetsize['vehicle_type'] = Vehicle_type
+    df_fleetsize['provider_name'] = Provider_name
+    df_fleetsize['count_in_service'] = Count_in_service
+    df_fleetsize['count_in_maintenance'] = Count_in_maintenance
+    
+    return df_fleetsize
+```
+
 </details>
 
 ### Equity Data
