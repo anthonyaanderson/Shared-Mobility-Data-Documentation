@@ -80,27 +80,26 @@ def get_trip_count(df_trips):
 </details>
 
 ### Fleet Snapshot Methodology (since June 2020)
-In order to count the number of shared mobility devices on city streets at any given time, we are now taking a snapshot count on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json)
+In order to count the number of shared mobility devices on city streets at any given time, we take a snapshot count every hour on the hour using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json).
 
-The process to create an hourly snap shot(See code below): 
-1.	Begin with an array of date-times for every hour of a day. This gives you the list of snapshot date-times to check. (*ex. 09/01/2020 1:00AM, 09/01/2020 2:00 AM, 09/01/2020 3:00 AM*)
+The process to create an hourly snapshot (See code below under "Details"): 
+1.	Begin with an array of date-times for every hour of a day. This gives the list of snapshot date-times to check. (*ex. 09/01/2020 1:00AM, 09/01/2020 2:00 AM, 09/01/2020 3:00 AM*)
 2.	For each date-time, filter the status changes data set to gather all status changes for the seven days leading up to each date-time. (*For example, if the date-time is 09/01/2020 at 1:00 AM, gather all status changes between 08/25/2020 to 09/01/2020 at 1:00 AM.*)
-3.	Create a list of all of the unique devices that appear within that filtered data. You will use that list to check the status of each device.
+3.	Create a list of all of the unique devices that appear within that filtered data (for use in checking the status of each device).
 4.	For each device in that list, create a data set with only this device’s status changes.
 5.	Save only the last status change that device recorded in this data set.
-6.	Combine all of these devices status’s for each day-time  period into one data group.
-7.	Group the data by day-time, provider, vehicle type, event type, and  event reason by counting the each datapoint.  
-
+6.	Combine all device statuses for each day-time period into one data group.
+7.	Group the data by day-time, provider, vehicle type, event type, and event reason by counting each datapoint.  
  
-The snaphot data with have a group of event types per hour. Those event types are classified into if a device is included in the count or out for maintenance. 
+The snaphot data will have a group of event types per hour. Those event types include or exclude devices from the fleet count as follows:
 
-| Event Type  | Event Type Reason | FleetCount |
+| Vehicle State  | Event Type | FleetCount |
 | ------------- | ------------- | ------------- |
 | available  | maintenance_drop_off  | included  | 
 | available  | rebalance_drop_off  | included   | 
 | available  | user_drop_off  | included  | 
 | available  | service_start  | included   | 
-| removed  | service_end  | No Longer Counted   | 
+| removed  | service_end  | no longer counted   | 
 | removed  | maintenance_pick_up  | out for maintenance  | 
 | removed  | rebalance_pick_up | out for maintenance  | 
 | reserved  | user_pick_up | included   | 
@@ -171,7 +170,7 @@ def get_hourlysnapshot(SC, rundate):
 To calculate the size of the bike share fleets in Seattle, we check all status changes for each provider looking back 7 days using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
 
 Status changes with event types that are not "service ends" or "maintenance_pick_up" are classified as "In Service."
-Status Changes with the event reason of "maintenanence_pick_up"  are classified as "In Maintenance."
+Status Changes with the event reason of "maintenance_pick_up"  are classified as "In Maintenance."
 <details>
   <summary>Python Code: Click to expand!</summary>
   
