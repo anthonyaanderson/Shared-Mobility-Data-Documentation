@@ -50,13 +50,15 @@ Example location bins by coordinate truncation to 0.01 degrees latitude and long
 
 ![Image of Grids](https://github.com/anthonyaanderson/MDS-Data/blob/main/SeattleGrid.png)
 
-### Trip Count
+## Other Data Aggregations
+
+### Trip Count & Details
 To calculate the daily number of shared mobility trips, we use an aggregated count of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json).
 
 Process:
 1) Filter the trips to those that happen in Seattle city limits, have a duration longer than 30 seconds, and a distance greater than zero meters. 
 2) Pull the travel date by the trip end time. 
-3) Aggregate the dataframe into a daily count of trips by provider and vehicle type.
+3) Aggregate the dataframe into a daily count of trips, sum of trip distance and trip durantion by provider and vehicle type.
 <details>
   <summary>Python Code: Click to expand!</summary>
   
@@ -72,7 +74,7 @@ def get_trip_count(df_trips):
     df_trips['trip_count'] = 1
     
     # Aggregate dataframe by travel date, provider name, and vehicle type
-    df_tripcount = df_trips.groupby(['travel_date','ProviderName','VehicleType'], as_index=False).agg({'trip_count':'sum'})
+    df_tripcount = df_trips.groupby(['travel_date','ProviderName','VehicleType'], as_index=False).agg({'trip_count':'sum', 'trip_duration':'sum', 'trip_distance':'sum'})
     
     return df_tripcount
 ```
@@ -166,6 +168,11 @@ def get_hourlysnapshot(SC, rundate):
  ```
 </details>
 
+### Equity Data
+
+### Ridership
+
+## Archived Data Aggregations
 ### Fleet Count (Prior to June 2020)
 To calculate the size of the bike share fleets in Seattle, we check all status changes for each provider looking back 7 days using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
 
@@ -249,8 +256,5 @@ def get_fleet_size(df_status):
 
 </details>
 
-### Equity Data
-### Ridership
 ### Transit Trips
-### Trips Details
 
