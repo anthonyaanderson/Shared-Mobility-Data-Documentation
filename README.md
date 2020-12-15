@@ -14,9 +14,15 @@ for performing our work while protecting against the
 misuse of personal mobility data.
 
 ## Data Retrieval 
-MDS – or “Mobility Data Specification” – is comprised of a set of Application Programming Interfaces (APIs) that create standard communications between cities and private companies to improve their operations. 
+Shared micromobility vendors permitted to operate in Seattle are required to share data about their operations with SDOT using the [Mobility Data Specification] (https://github.com/openmobilityfoundation/mobility-data-specification) (MDS).
 
-To maintain compliance with shared mobility licensing permits, providers must provide and an [API  that projects trips and Status change data](https://github.com/openmobilityfoundation/governance/blob/main/technical/Understanding-MDS-APIs.md) according to [MDS standards](https://github.com/openmobilityfoundation/mobility-data-specification).(Currently using MDS 1.0-0.4.0)
+MDS comprises a set of application programming interfaces (APIs) that standardize communications between cities and private mobility companies. The **provider** API includes the following data:
+
+• **Trips** - start and end time, start and end location, distance (meters), and duration (seconds)
+
+• **Status changes** - status of each vehicle, including available, reserved, removed, and non-operational
+
+• **Real-time data** - vendors must also expose a public General Bikeshare Feed Specification (GBFS) URL to facilitate customer-facing applications such as trip planners
 
 
 
