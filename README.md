@@ -173,6 +173,10 @@ def get_hourlysnapshot(SC, rundate):
 ### Ridership
 
 ## Archived Data Aggregations
+<details>
+  <summary>Archived Data Aggregations</summary>
+
+
 ### Fleet Count (Prior to June 2020)
 To calculate the size of the bike share fleets in Seattle, we check all status changes for each provider looking back 7 days using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
 
@@ -257,4 +261,6 @@ def get_fleet_size(df_status):
 </details>
 
 ### Transit Trips
+  
 
+</details>
