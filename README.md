@@ -46,7 +46,7 @@ Our data policy aggregates trip data into location and time bins as follows:
 
 * Finally, we aggregate trips by location and time bins by quarter. To prevent individual trips from being identified, we drop the location information in any group that consist of less than 3 trips. These sensitive trips are included in the data set as larger groups aggregated only by time bins. Within all groups, travel attributes such as distance traveled and trip duration are averaged.
 
-Example location bins by coordinate truncation to 0.01 degrees Latitude and Longitude.
+Example location bins by coordinate truncation to 0.01 degrees latitude and longitude:
 
 ![Image of Grids](https://github.com/anthonyaanderson/MDS-Data/blob/main/SeattleGrid.png)
 
@@ -54,7 +54,8 @@ Example location bins by coordinate truncation to 0.01 degrees Latitude and Long
 Here is a list of the data aggregations used to analyse shared mobility data. 
 
 ### Trip Count
-To calculate the number of shared mobility trips daily we use an aggregatedcount of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json)
+To calculate the number of shared mobility trips daily we use an aggregated count of the  [MDS Trips Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/trips.json)
+
 Process:
 1) Filter the trips to in Seattle, a duration of longer than 30 seconds and a distance of longer than 1 meter. 
 2) Pull the travel date by the trips end time. 
@@ -81,7 +82,7 @@ def get_trip_count(df_trips):
 
 </details>
 
-### Fleet Count(Pre June 2020)
+### Fleet Count (Prior to June 2020)
 To calculate the size of the bike share fleets in Seattle,  we checked all status changes for each provider back 7 days using using the [MDS Status Change Endpoint Data](https://github.com/openmobilityfoundation/mobility-data-specification/blob/main/provider/status_changes.json) 
 Status Changes with event reason's that are not "service ends" or "maintaince picks up" are calssified as  "In Service."
 Status Changes with the event reason of "maintanience pick up"  are classified as "In Maintanince."
