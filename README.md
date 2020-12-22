@@ -181,76 +181,100 @@ Then run the trip count and fleet snap shot analysis above on the filtered data.
   <summary>Python Code: Click to expand!</summary>
   
 ```python
-def get_fleet_size(df_status):
+# Get trips and status changes from datamarts into geodataframes
+TripsGDF = gpd.GeoDataFrame(tripsDM, geometry=gpd.points_from_xy(tripsDM.LongitudeStart, tripsDM.LatitudeStart))
+sc_gdf = gpd.GeoDataFrame(statuschangesDM, geometry=gpd.points_from_xy(sc.Longitude, sc.Latitude))
 
-    df_status['event_time_utc'] = pd.to_datetime(df_status['EventTimeLocal'])
-    df_status.drop_duplicates(keep="last",inplace=True) 
-    
-    # limit records to locations in Seattle
-    df_status['location'] = df_status[['Latitude','Longitude']].apply(lambda x: inSeattle(*x), axis=1)
-    df_status = df_status[df_status['location'] == 'In Seattle']
-    
-    df_providers = df_status.groupby(['ProviderName'], as_index=False).agg({'location':'first'})
-    
-    #print (df_providers)
-    providers = df_providers['ProviderName'].to_list()
-    print (providers)
-    
-    Snapshot_date = []
-    Count_in_service = []
-    Count_in_maintenance = []
-    Provider_name = []
-    Vehicle_type = []
-    
-    
-    # Iterate through each provider
-    for provider in providers:
+# Use a spatial join to join Equity areas to the locatiosn of the trip endpoints and status changes. 
+Trip_EA = gpd.sjoin(TripsGDF,EquityAreas, how="left", op="within")
+SC_EA = gpd.sjoin(sc_gdf,EquityAreas, how="left", op="within")
 
-        df_status_provider = df_status[df_status['ProviderName'] == provider]
-        
-        # Minimum and maximum start dates
-        min_date = df_status_provider['event_time_utc'].min().replace(hour=5, minute=0, second=0, microsecond=0)
-        max_date = df_status_provider['event_time_utc'].max().replace(hour=5, minute=0, second=0, microsecond=0)
-        report_start_date = min_date + timedelta(days=7)
-        report_duration = (max_date - report_start_date).days + 2
-        print (min_date, max_date, report_start_date, report_duration)
-        
-        print ('min_date:',min_date,'max_date:',max_date, 'report_start_date:',report_start_date)
-        
-        # Iterate through each day in the dataset and calculate the fleet size for that time
-        for i in range(report_duration):
-        
-            snapshot_end_date = report_start_date + timedelta(days=i)
-            snapshot_start_date = snapshot_end_date + timedelta(days=-7)  
-            travel_date = snapshot_end_date.strftime("%Y-%m-%d")
-            print ("travel_date", travel_date,"snapshot_end_date",snapshot_end_date,"snapshot_start_date",snapshot_start_date)
-
-            df = df_status_provider.copy()
-
-            # fleet size calculation critieria:
-            # event is within one week prior to snapshot
-            df = df[(df['event_time_utc'] > snapshot_start_date) & (df['event_time_utc'] <= snapshot_end_date)]
-
-            # sort chronologically, then take the first event in the time period
-            df = df.sort_values(by=['DeviceId','event_time_utc'], ascending=[False, False])
-            df = df.drop_duplicates(subset=['DeviceId'], keep='first')
-            
+# Trips Agg Function
+def get_equity_count(df):
     
-            for vehicle_type in df.VehicleType.unique():
-                Snapshot_date.append(travel_date)
-                Provider_name.append(provider)
-                Vehicle_type.append(vehicle_type)
-                Count_in_service.append(df["EventTypeReason"][(df["EventTypeReason"] != 'maintenance_pick_up') & (df["EventTypeReason"] != 'service_end') & (df["VehicleType"] == vehicle_type)].count())
-                Count_in_maintenance.append(df["EventTypeReason"][(df["EventTypeReason"] == 'maintenance_pick_up') & (df["VehicleType"] == vehicle_type)].count())
+    df_trips = df
+    df_trips['end_time_utc'] = pd.to_datetime(df_trips['EndTimeLocal'])
 
-    df_fleetsize = pd.DataFrame()
-    df_fleetsize['travel_date'] = Snapshot_date
-    df_fleetsize['vehicle_type'] = Vehicle_type
-    df_fleetsize['provider_name'] = Provider_name
-    df_fleetsize['count_in_service'] = Count_in_service
-    df_fleetsize['count_in_maintenance'] = Count_in_maintenance
+    df_trips = df_trips[df_trips['TripDuration'] > 30]
+    df_trips = df_trips[df_trips['TripDistance'] > 0]
+    df_trips['travel_date'] = df_trips['end_time_utc'].apply(lambda x: x.strftime("%Y-%m-%d"))
     
-    return df_fleetsize
+    df_trips['trip_count'] = 1
+    df_trips.loc[df_trips['EArea'] == 'Northern', 'Northern'] = 1 
+    df_trips.loc[df_trips['EArea'] == 'Central', 'Central'] = 1
+    df_trips.loc[df_trips['EArea'] == 'Southern', 'Southern'] = 1
+    df_trips.loc[df_trips['EArea'] == 'Southern', 'EquityTotal'] = 1
+    df_trips.loc[df_trips['EArea'] == 'Central', 'EquityTotal'] = 1
+    df_trips.loc[df_trips['EArea'] == 'Northern', 'EquityTotal'] = 1
+    df_equitycount = df_trips.groupby(['travel_date','ProviderName','VehicleType'], as_index=False).agg({'trip_count':'sum','Northern':'sum','Central':'sum','Southern':'sum','EquityTotal':'sum'})
+    
+    return df_equitycount
+    
+# Status Change Agg Function
+def get_hourlysnapshot(SC, rundate = '10-24-2020'):
+  
+  dev =[]
+  EventTimeLocal =[]
+  EventType =[]
+  EventTypeReason =[]
+  ProviderName =[]
+  VehicleType =[]
+  EArea = []
+  Snaptime = []
+  Timestamp = pd.to_datetime('now')
+  
+  rng = pd.date_range(rundate, periods=24, freq='1H')
+  
+  for d in rng:
+  
+    filterSC =  SC[SC['EventTimeLocal'] < d]
+    days=7    
+    cutoff_date = d - pd.Timedelta(days=days)
+    filterSC2 = filterSC[filterSC['EventTimeLocal'] > cutoff_date] 
+    Devices = filterSC2.DeviceId.unique()
+
+    for i in Devices:
+
+      IDevice = filterSC2[filterSC2['DeviceId']== i]
+      LastStatus = IDevice.iloc[-1:]
+      dev.append(i)
+      EventTimeLocal.append(LastStatus.iloc[0]["EventTimeLocal"])
+      EventType.append(LastStatus.iloc[0]["EventType"])
+      EventTypeReason.append(LastStatus.iloc[0]["EventTypeReason"])
+      ProviderName.append(LastStatus.iloc[0]["ProviderName"])
+      VehicleType.append(LastStatus.iloc[0]["VehicleType"])
+      EArea.append(LastStatus.iloc[0]["EArea"])
+      Snaptime.append(d)
+
+  df = pd.DataFrame()
+  df["Device"] = dev
+  df['EventTimeLocal'] = EventTimeLocal
+  df['EventType'] = EventType
+  df['EventTypeReason'] = EventTypeReason
+  df['ProviderName'] = ProviderName
+  df['VehicleType'] = VehicleType
+  df['EArea'] = EArea
+  df['Time'] = Snaptime
+  df['count']= 1
+  
+  Snapshot = df.groupby(['Time','ProviderName','VehicleType', 'EArea', 'EventType', 'EventTypeReason',], as_index=False).agg({'count':'sum'})
+ 
+  return Snapshot
+  
+# Run joined dataframes through agg functions. 
+
+TripsEAreas = get_equity_count(Trips_EA)
+
+df = get_hourlysnapshot(SC_EA, check)
+df.loc[df['EArea'] == 'Northern', 'Northern'] = 1 
+df.loc[df['EArea'] == 'Central', 'Central'] = 1
+df.loc[df['EArea'] == 'Southern', 'Southern'] = 1
+df.loc[df['EArea'] == 'Southern', 'EquityTotal'] = 1
+df.loc[df['EArea'] == 'Central', 'EquityTotal'] = 1
+df.loc[df['EArea'] == 'Northern', 'EquityTotal'] = 1
+
+FleetEAreas = df.groupby(['Time','ProviderName','VehicleType','EventType', 'EventTypeReason'], as_index=False).agg({'count':'sum','Northern':'sum','Central':'sum','Southern':'sum','EquityTotal':'sum'})
+
 ```
 
 </details>
