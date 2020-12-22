@@ -59,8 +59,9 @@ Process:
 1) Filter the trips to those that happen in Seattle city limits, have a duration longer than 30 seconds, and a distance greater than zero meters. 
 2) Pull the travel date by the trip end time. 
 3) Aggregate the dataframe into a daily count of trips, sum of trip distance and trip durantion by provider and vehicle type.
+
 <details>
-  <summary>Python Code: Click to expand!</summary>
+  <summary>Python Code</summary>
   
 ```python
 def get_trip_count(df_trips):
@@ -109,7 +110,7 @@ The snaphot data will have a group of event types per hour. Those event types in
 | unavailable  | maintenance  | included   | 
 
 <details>
-  <summary>Python Code: Click to expand!</summary>
+  <summary>Python Code</summary>
   
 ```python
 #SC is the internal Status Changes Database
@@ -170,7 +171,7 @@ def get_hourlysnapshot(SC, rundate):
 
 ### Equity Data
 
-To calculate the trips and fleet in our designated equity areas, we use the same process as our [trip count data](https://nacto.org/wp-content/uploads/2019/05/NACTO_IMLA_Managing-Mobility-Data.pdf)  and [fleet size data.](https://nacto.org/wp-content/uploads/2019/05/NACTO_IMLA_Managing-Mobility-Data.pdf)  
+To calculate the trips and fleet in our designated equity areas, we use the same process as our [trip count data](https://github.com/anthonyaanderson/Shared-Mobility-Data-Documentation/blob/main/README.md#trip-count--details)  and [fleet size data.](https://github.com/anthonyaanderson/Shared-Mobility-Data-Documentation/blob/main/README.md#fleet-snapshot-methodology-since-june-2020)  
 
 Process:
 
@@ -178,7 +179,7 @@ filter the trips and the status change data to the equity zones.
 Then run the trip count and fleet snap shot analysis above on the filtered data. 
 
 <details>
-  <summary>Python Code: Click to expand!</summary>
+  <summary>Python Code</summary>
   
 ```python
 # Get trips and status changes from datamarts into geodataframes
@@ -281,6 +282,9 @@ FleetEAreas = df.groupby(['Time','ProviderName','VehicleType','EventType', 'Even
 
 ### Ridership
 
+Every month each permmited provider provided the city with ridership data. We use that data to see how many unique riders are using shared devices in the city. 
+This data is combined from each months reporting. 
+
 ## Archived Data Aggregations
 <details>
   <summary>Archived Data Aggregations</summary>
@@ -292,7 +296,7 @@ To calculate the size of the bike share fleets in Seattle, we check all status c
 Status changes with event types that are not "service ends" or "maintenance_pick_up" are classified as "In Service."
 Status Changes with the event reason of "maintenance_pick_up"  are classified as "In Maintenance."
 <details>
-  <summary>Python Code: Click to expand!</summary>
+  <summary>Python Code</summary>
   
 ```python
 def get_fleet_size(df_status):
@@ -370,6 +374,6 @@ def get_fleet_size(df_status):
 </details>
 
 ### Transit Trips
-  
+ We are no longer using these calculations.  
 
 </details>
