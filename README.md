@@ -170,6 +170,91 @@ def get_hourlysnapshot(SC, rundate):
 
 ### Equity Data
 
+To calculate the trips and fleet in our designated equity areas, we use the same process as our [trip count data](https://nacto.org/wp-content/uploads/2019/05/NACTO_IMLA_Managing-Mobility-Data.pdf)  and [fleet size data.](https://nacto.org/wp-content/uploads/2019/05/NACTO_IMLA_Managing-Mobility-Data.pdf)  
+
+Process:
+
+filter the trips and the status change data to the equity zones.
+Then run the trip count and fleet snap shot analysis above on the filtered data. 
+
+<details>
+  <summary>Python Code: Click to expand!</summary>
+  
+```python
+def get_fleet_size(df_status):
+
+    df_status['event_time_utc'] = pd.to_datetime(df_status['EventTimeLocal'])
+    df_status.drop_duplicates(keep="last",inplace=True) 
+    
+    # limit records to locations in Seattle
+    df_status['location'] = df_status[['Latitude','Longitude']].apply(lambda x: inSeattle(*x), axis=1)
+    df_status = df_status[df_status['location'] == 'In Seattle']
+    
+    df_providers = df_status.groupby(['ProviderName'], as_index=False).agg({'location':'first'})
+    
+    #print (df_providers)
+    providers = df_providers['ProviderName'].to_list()
+    print (providers)
+    
+    Snapshot_date = []
+    Count_in_service = []
+    Count_in_maintenance = []
+    Provider_name = []
+    Vehicle_type = []
+    
+    
+    # Iterate through each provider
+    for provider in providers:
+
+        df_status_provider = df_status[df_status['ProviderName'] == provider]
+        
+        # Minimum and maximum start dates
+        min_date = df_status_provider['event_time_utc'].min().replace(hour=5, minute=0, second=0, microsecond=0)
+        max_date = df_status_provider['event_time_utc'].max().replace(hour=5, minute=0, second=0, microsecond=0)
+        report_start_date = min_date + timedelta(days=7)
+        report_duration = (max_date - report_start_date).days + 2
+        print (min_date, max_date, report_start_date, report_duration)
+        
+        print ('min_date:',min_date,'max_date:',max_date, 'report_start_date:',report_start_date)
+        
+        # Iterate through each day in the dataset and calculate the fleet size for that time
+        for i in range(report_duration):
+        
+            snapshot_end_date = report_start_date + timedelta(days=i)
+            snapshot_start_date = snapshot_end_date + timedelta(days=-7)  
+            travel_date = snapshot_end_date.strftime("%Y-%m-%d")
+            print ("travel_date", travel_date,"snapshot_end_date",snapshot_end_date,"snapshot_start_date",snapshot_start_date)
+
+            df = df_status_provider.copy()
+
+            # fleet size calculation critieria:
+            # event is within one week prior to snapshot
+            df = df[(df['event_time_utc'] > snapshot_start_date) & (df['event_time_utc'] <= snapshot_end_date)]
+
+            # sort chronologically, then take the first event in the time period
+            df = df.sort_values(by=['DeviceId','event_time_utc'], ascending=[False, False])
+            df = df.drop_duplicates(subset=['DeviceId'], keep='first')
+            
+    
+            for vehicle_type in df.VehicleType.unique():
+                Snapshot_date.append(travel_date)
+                Provider_name.append(provider)
+                Vehicle_type.append(vehicle_type)
+                Count_in_service.append(df["EventTypeReason"][(df["EventTypeReason"] != 'maintenance_pick_up') & (df["EventTypeReason"] != 'service_end') & (df["VehicleType"] == vehicle_type)].count())
+                Count_in_maintenance.append(df["EventTypeReason"][(df["EventTypeReason"] == 'maintenance_pick_up') & (df["VehicleType"] == vehicle_type)].count())
+
+    df_fleetsize = pd.DataFrame()
+    df_fleetsize['travel_date'] = Snapshot_date
+    df_fleetsize['vehicle_type'] = Vehicle_type
+    df_fleetsize['provider_name'] = Provider_name
+    df_fleetsize['count_in_service'] = Count_in_service
+    df_fleetsize['count_in_maintenance'] = Count_in_maintenance
+    
+    return df_fleetsize
+```
+
+</details>
+
 ### Ridership
 
 ## Archived Data Aggregations
